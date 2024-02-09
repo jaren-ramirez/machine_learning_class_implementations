@@ -15,8 +15,11 @@ def grad_descent(x_train, y_train, theta_0, weights, N, learning_rate):
     num_features = len(weights)
     y_hat_arr = theta_0 + np.dot(x_train,weights) # we compute all the estimated y values for each sample by adding the intercept to our dot product of sample_i
                                                   # and scalar_i 
-        
+                                                  
+    y_hat_arr = 1 / (1 + np.exp(-y_hat_arr))
+    
     error_arr = y_hat_arr - y_train
+    
     new_theta_0 = theta_0 - learning_rate * (1/N) * np.sum(error_arr) 
     new_weights = np.zeros((num_features,1))
 
