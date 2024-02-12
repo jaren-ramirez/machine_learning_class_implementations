@@ -26,11 +26,13 @@ def calculate_scoring_metrics(TP,TN,FP,FN):
     return precision, recall, F1, accuracy
 
 def binary_cross_entropy(X_test, y_test, theta_0, weights,N):
+    
     y_hat_arr = theta_0 + np.dot(X_test,weights)
 
     y_hat_arr = 1 / (1 + np.exp(-1 * y_hat_arr)) 
     epsilon = 1e-15
-    y_hat_arr = np.clip(y_hat_arr, epsilon, 1 - epsilon)      
+    y_hat_arr = np.clip(y_hat_arr, epsilon, 1 - epsilon)
+    b = y_test * y_hat_arr      
     cross_entropy = (-1/N) * np.sum(y_test * np.log(y_hat_arr) + (1-y_test) * np.log(1-y_hat_arr))
     return cross_entropy
 
@@ -51,7 +53,7 @@ def grad_descent(x_train, y_train, theta_0, weights, N, learning_rate):
         
     return (new_theta_0, new_weights)
 
-# breast_cancer = datasets.load_breast_cancer(as_frame=True)
+breast_cancer = datasets.load_breast_cancer(as_frame=True)
 
 # breast_cancer = breast_cancer.frame
 
@@ -60,7 +62,7 @@ def grad_descent(x_train, y_train, theta_0, weights, N, learning_rate):
 # y = breast_cancer[["target"]].to_numpy()
 # X = breast_cancer.loc[:, breast_cancer.columns != 'target'].to_numpy()
 
-breast_cancer = datasets.load_breast_cancer()
+
 X = breast_cancer.data
 y = breast_cancer.target
 
@@ -80,10 +82,10 @@ N = len(X_train)
 test_N = len(X_test)
 num_features = 30
 iterations = 10000
-learning_rate = 0.0001
+learning_rate = 0.0003
 
 theta_0 = 0
-weights = np.zeros((num_features,1))
+weights = np.zeros((num_features))
 
 
 
@@ -98,8 +100,10 @@ TP, TN, FP, FN = calculate_confusion_matrix(y_test,y_pred_test)
 
 precision, recall, f1, accuracy = calculate_scoring_metrics(TP,TN,FP,FN)
 
+print(f"Total data: {len(X_train) + len(X_test)}")
 
-print(f"Length of Test Set: {len(y_test)}\nTP: {TP}\nTN: {TN}\nFP: {FP}\nFN: {FN}\n")
+print(f"Lenght of Training Set: {len(X_train)}")
+print(f"Length of Test Set: {len(X_test)}\nTP: {TP}\nTN: {TN}\nFP: {FP}\nFN: {FN}\n")
 
 print(f"Precision: {precision}\nRecall: {recall}\nF1: {f1}\nAccuracy: {accuracy}")
 
